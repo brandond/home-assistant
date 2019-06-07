@@ -24,8 +24,9 @@ CONF_CONTROLLER = 'vera_controller_url'
 
 VERA_ID_FORMAT = '{}_{}'
 
-ATTR_CURRENT_POWER_W = "current_power_w"
-ATTR_CURRENT_ENERGY_KWH = "current_energy_kwh"
+ATTR_CURRENT_POWER_W = 'current_power_w'
+ATTR_CURRENT_ENERGY_KWH = 'current_energy_kwh'
+ATTR_VERA_DEVICE_ID = 'vera_device_id'
 
 VERA_DEVICES = 'vera_devices'
 VERA_SCENES = 'vera_scenes'
@@ -185,7 +186,10 @@ class VeraDevice(Entity):
         if energy:
             attr[ATTR_CURRENT_ENERGY_KWH] = convert(energy, float, 0.0)
 
-        attr['Vera Device Id'] = self.vera_device.vera_device_id
+        for alert in self.vera_device.get_alerts():
+            attr[alert.code.lower()] = alert.value
+
+        attr[ATTR_VERA_DEVICE_ID] = self.vera_device.vera_device_id
 
         return attr
 
